@@ -20,7 +20,7 @@
 - Users upload structured data (`csv`, `xlsx`, `json`, `parquet`) or images (`jpg`, `png`, `jpeg`).
 - Image uploads are processed using **pytesseract** to extract tabular content.
 - Leveraging **CrewAI** agents:
-  - **Agent 1**: Extracts metadata (e.g., `.head()`, `.info()`, description) and generates exploratory questions.
+  - **Agent 1**: Uses metadata to generate exploratory questions with **DeepSeek LLM**.
   - **Agent 2**: Uses the questions and metadata to generate visualization code with **DeepSeek LLM**.
 - Code is executed using **Plotly**, and the resulting dashboard is rendered automatically.
 
