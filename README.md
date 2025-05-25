@@ -33,7 +33,7 @@
 Talk to your data like a human! The **Soltan** chatbot (powered by **Gemini-1.5-Flash**) supports:
 - ✅ Asking analytical questions (e.g., "What are the top-selling products?")
 - ✅ Executing preprocessing tasks (e.g., dropping columns, merging files)
-- ✅ Friendly small talk (e.g., "Hi", "Who am I?")
+- ✅ Friendly talk (e.g., "Hi", "Who am I?")
 
 **Soltan** uses a **Decision Maker LLM** to route queries:
 
