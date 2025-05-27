@@ -1,3 +1,6 @@
+![Cdata](logo6.png)
+
+
 # Cdata: AI-Powered Data Analyzer 🚀📊
 
 **Cdata** is an intelligent data analysis assistant that empowers users to understand, manipulate, and visualize their structured datasets interactively. Through natural language and an intuitive chatbot interface, Cdata allows you to:
@@ -5,7 +8,8 @@
 - Generate dashboards automatically
 - Perform preprocessing tasks
 - Build predictive models
-- Chat with your data 
+- Chat with your data
+![Cdata](assets/cdata.png)
 
 > 🎯 Whether you're a data scientist or a beginner, **Cdata** helps you unlock insights from your data with minimal effort.
 
@@ -15,7 +19,7 @@
 
 ### 📌 1. Data Entry & Auto-Dashboard Generation
 
-![Flow 2](./path/to/assets/dashboard_flow.png)
+![Dashboard_flow](assets/dashboard_flow.png)
 
 - Users upload structured data (`csv`, `xlsx`, `json`, `parquet`) or images (`jpg`, `png`, `jpeg`).
 - Image uploads are processed using **pytesseract** to extract tabular content.
@@ -28,7 +32,7 @@
 
 ### 💬 2. Chat With Your Data - Powered by **Soltan**
 
-![Flow 3](./path/to/your/third-image.png)
+![Chat Flow](assets/chat_flow.png)
 
 Talk to your data like a human! The **Soltan** chatbot (powered by **Gemini-1.5-Flash**) supports:
 - ✅ Asking analytical questions (e.g., "What are the top-selling products?")
@@ -48,8 +52,6 @@ After preprocessing, users can regenerate dashboards or EDA reports.
 ---
 
 ### 📈 3. Exploratory Data Analysis (EDA)
-
-![Flow 1](./path/to/your/first-image.png)
 
 Generate a comprehensive EDA report using **`pandas-profiling`** / `ydata-profiling`, including:
 - Data types and distributions
