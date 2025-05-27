@@ -5,7 +5,7 @@
 - Generate dashboards automatically
 - Perform preprocessing tasks
 - Build predictive models
-- Chat with your data (in English & Arabic)
+- Chat with your data 
 
 > 🎯 Whether you're a data scientist or a beginner, **Cdata** helps you unlock insights from your data with minimal effort.
 
@@ -15,7 +15,7 @@
 
 ### 📌 1. Data Entry & Auto-Dashboard Generation
 
-![Flow 2](./path/to/your/second-image.png)
+![Flow 2](./path/to/assets/dashboard_flow.png)
 
 - Users upload structured data (`csv`, `xlsx`, `json`, `parquet`) or images (`jpg`, `png`, `jpeg`).
 - Image uploads are processed using **pytesseract** to extract tabular content.
@@ -114,18 +114,7 @@ Build machine learning models without writing a line of code:
 ## 🌍 Language Support
 
 - English ✅  
-- Arabic ✅
+- Arabic :coming soon
 
----
 
-## 📁 Future Enhancements
 
-- Add time-series model support
-- Integrate SQL-based data querying
-- Real-time data streaming dashboard
-
----
-
-## 📬 Contact
-
-For contributions or support, feel free to reach out or open an issue.
