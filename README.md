@@ -1,6 +1,9 @@
 ![Cdata](logo6.png)
 # Cdata: AI-Powered Data Analyzer 🚀📊
-![DEMO](assets/demo.mp4)
+
+## 🎥 DEMO
+
+▶️ [Click here to watch the demo](assets/demo.mp4)
 
 **Cdata** is an intelligent data analysis assistant that empowers users to understand, manipulate, and visualize their structured datasets interactively. Through natural language and an intuitive chatbot interface, Cdata allows you to:
 - Analyze your data
