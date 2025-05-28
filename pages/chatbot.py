@@ -113,7 +113,7 @@ def main():
     
     with col2:
         if st.button("📊 View Dashboard", use_container_width=True):
-            st.switch_page(r"D:\data\data\pages\dashboard.py")
+            st.switch_page(r"D:\data\data\cdata\pages\dashboard.py")
     
     with col3:
         if st.button("🗑️ Clear Chat", use_container_width=True):

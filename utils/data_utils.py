@@ -22,6 +22,8 @@ def load_data(uploaded_file):
             df = pd.read_pickle(uploaded_file)
         elif uploaded_file.name.endswith('.pickle'):
             df = pd.read_pickle(uploaded_file)
+        elif uploaded_file.name.endswith('.png') or uploaded_file.name.endswith('.jpg') or uploaded_file.name.endswith('.jpeg'):
+            df = extracted_table(uploaded_file)
 
         else:
             raise ValueError("Unsupported file format. Please upload a CSV or Excel file.")
@@ -30,15 +32,15 @@ def load_data(uploaded_file):
     except Exception as e:
         raise Exception(f"Error loading data: {str(e)}")
 
-def load_img(img):
-    try:
-        if img.name.endswith('.png') or img.name.endswith('.jpg') or img.name.endswith('.jpeg'):
-            df = extracted_table(img)     
-        else:
-            raise ValueError("Unsupported file format. Please upload a png ,jpg or jpeg .")    
-        return df
-    except Exception as e:
-        raise Exception(f"Error loading data: {str(e)}")
+# def load_img(img):
+#     try:
+#         if img.name.endswith('.png') or img.name.endswith('.jpg') or img.name.endswith('.jpeg'):
+#             df = extracted_table(img)     
+#         else:
+#             raise ValueError("Unsupported file format. Please upload a png ,jpg or jpeg .")    
+#         return df
+#     except Exception as e:
+#         raise Exception(f"Error loading data: {str(e)}")
 
 def create_data_summary(df):
     

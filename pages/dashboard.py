@@ -35,7 +35,7 @@ def main():
         
         with col2:
             if st.button("💬 Open ChatBot", use_container_width=True):
-                st.switch_page(r"D:\data\data\pages\chatbot.py")
+                st.switch_page(r"D:\data\data\cdata\pages\chatbot.py")
         
         with col3:
             if st.button("🔄 Regenerate", use_container_width=True):

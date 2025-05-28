@@ -67,53 +67,6 @@ def execute_visualization_code(code, df):
                     print(f"Error in visualization {viz_func_name}: {str(e)}")
                     # st.error(f"Error in visualization {viz_func_name}: {str(e)}")
                     
-            # --- Download buttons ---
-            # if figs:
-            #     # HTML download
-            #     custom_colors = ['#636EFA', '#EF553B', '#00CC96', '#AB63FA', '#FFA07A', '#FF7F0E', '#7F7F7F']
-            #     html_buf = io.StringIO()
-            #     for fig in figs:
-            #         html_buf.write(pio.to_html(fig, full_html=False, include_plotlyjs='cdn'))
-            #         fig.update_layout(colorway=custom_colors)
-            #     # html_content = f"<html><head></head><body>{html_buf.getvalue()}</body></html>"
-            #     html_content = f"""
-            #                     <html>
-            #                     <head>
-            #                         <meta charset="utf-8">
-            #                         <title>Visualizations</title>
-            #                     </head>
-            #                     <body>
-            #                         {html_buf.getvalue()}
-            #                     </body>
-            #                     </html>
-            #                     """
-            #     st.download_button(
-            #         label="⬇️ Download All Visualizations (HTML)",
-            #         data=html_content,
-            #         file_name="visualizations.html",
-            #         mime="text/html"
-            #     )
-
-            #     # PDF download (static images)
-            #     pdf_merger = PdfMerger()
-            #     pdf_buffers = []
-            #     for i, fig in enumerate(figs):
-            #         pdf_bytes = fig.to_image(format="pdf")
-            #         pdf_buf = io.BytesIO(pdf_bytes)
-            #         pdf_buffers.append(pdf_buf)
-            #         pdf_merger.append(pdf_buf)
-            #     if pdf_buffers:
-            #         merged_pdf = io.BytesIO()
-            #         pdf_merger.write(merged_pdf)
-            #         pdf_merger.close()
-            #         merged_pdf.seek(0)
-            #         print("PDF generated successfully.")
-            #         st.download_button(
-            #             label="⬇️ Download All Visualizations (PDF)",
-            #             data=merged_pdf,
-            #             file_name="visualizations.pdf",
-            #             mime="application/pdf"
-                    # )
     except Exception as e:
         print(f"Error executing visualization code: {str(e)}")
         # st.error(f"Error executing visualization code: {str(e)}")

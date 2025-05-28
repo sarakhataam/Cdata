@@ -21,6 +21,7 @@ from chat.generator import (
     generate_graph, 
     extract_data_code_and_insights
 )
+from utils.data_utils import load_data, create_data_summary
 def process_chat_input(user_input, llm):
     """Process user chat input and generate response"""
     if not user_input or st.session_state.df is None:
@@ -36,22 +37,22 @@ def process_chat_input(user_input, llm):
         with st.spinner("🤔 Analyzing your question..."):
             try:
                 # Get data columns
-                data_columns = st.session_state.df.columns.tolist()
-                
+                data_summary = create_data_summary(st.session_state.df)
                 # Generate query results
-                query_output, query_execution = generate_query(data_columns, user_input, st.session_state.df, llm)
-                
+
+                query_output, query_execution = generate_query(data_summary, user_input, llm, st.session_state.df)
                 # Generate graph and insights
+                print("Query Output:", query_output)
+                # print("Query Execution:", query_execution)
                 graph_output = generate_graph(query_execution, user_input, llm)
+                print("Graph Output:", graph_output)
                 data_string, code_string, insights_string = extract_data_code_and_insights(graph_output)
-                # print("insights_string",insights_string.strip())
                 # Prepare response
                 if insights_string != 'No insights found.':
                     response = f"### Analysis Results\n\n{data_string}\n\n### Insights\n\n{insights_string}"
                 else:
                     response = f"### Analysis Results\n\n{data_string}"
-                # st.session_state.chat_history.append({"role": "assistant", "content": response})
-                # Add response to chat history
+
                 message_data = {"role": "assistant", "content": response}
                 if code_string:
                     message_data["visualization_code"] = code_string
@@ -67,13 +68,9 @@ def process_chat_input(user_input, llm):
             try:
                 # Generate preprocessing code
                 preprocessing_code = generate_preprocessing_code(user_input, llm)
-                print("Generated Preprocessing Code:", preprocessing_code)
+                # print("Generated Preprocessing Code:", preprocessing_code)
                 # Execute preprocessing code
                 st.session_state.df = execute_preprocessing_code(st.session_state.df,st.session_state.df2, preprocessing_code)
-                
-                # Success message
-                # response = f"✅ **Preprocessing Complete!**\n\nI've processed your instruction: '{user_input}'\n\n📊 **Updated Dataset:**\n- Rows: {st.session_state.df.shape[0]:,}\n- Columns: {st.session_state.df.shape[1]}"
-                # st.session_state.chat_history.append({"role": "assistant", "content": response})
                 st.session_state.preprocessing_df = True
                 
             except Exception as e:

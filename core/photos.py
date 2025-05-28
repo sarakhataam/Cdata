@@ -7,7 +7,7 @@ import numpy as np
 # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 import requests
 
-url = "https://70fd-34-139-19-251.ngrok-free.app/image/"
+url = "https://7729-35-193-53-57.ngrok-free.app/image/"
 
 def extracted_table(img_path):
     

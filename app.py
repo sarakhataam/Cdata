@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 from streamlit_option_menu import option_menu
 from PIL import Image
-from utils.data_utils import load_data, load_img
+from utils.data_utils import load_data
 from utils.setup import initialize_session_state
 from ui.style_app import styling_app ,render_app_header
 
@@ -55,26 +55,25 @@ st.markdown("---")
 
 # ✅ Upload Section
 st.markdown("### 📤 Upload your dataset")
-uploaded_file = st.file_uploader("", type=["csv", "xlsx", "xls", "json", "parquet"], label_visibility="collapsed")
+uploaded_file = st.file_uploader("", type=["csv", "xlsx", "xls", "json", "parquet","jpg", "jpeg", "png"], label_visibility="collapsed")
 
-with st.sidebar:
-    st.markdown("### 📸 (Optional) Upload a Photo")
-    photo = st.file_uploader("Upload a photo (optional)", type=["jpg", "jpeg", "png"])
+# with st.sidebar:
+#     st.markdown("### 📸 (Optional) Upload a Photo")
+#     photo = st.file_uploader("Upload a photo (optional)", type=["jpg", "jpeg", "png"])
     
 
 # if photo is not None:
 #     st.image(photo, caption="Your photo", use_column_width=True)
 
-if uploaded_file or photo:  
+if uploaded_file:  
     try:
         if st.session_state.df is None:
             with st.spinner("Loading your data..."):
-                if uploaded_file is not None:
-                    st.session_state.df = load_data(uploaded_file)
-                    st.session_state.original_df = st.session_state.df.copy()
-                if photo is not None:
-                    st.session_state.df = load_img(photo)
-                    st.session_state.original_df = st.session_state.df.copy()
+                st.session_state.df = load_data(uploaded_file)
+                st.session_state.original_df = st.session_state.df.copy()
+                # if photo is not None:
+                #     st.session_state.df = load_img(photo)
+                #     st.session_state.original_df = st.session_state.df.copy()
                
                 # Reset analysis state when new data is uploaded
                 st.session_state.crew_analysis_done = False

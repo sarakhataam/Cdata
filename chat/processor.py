@@ -1,102 +1,80 @@
 # Function to clean user question
 import re
 import pandas as pd
-from langchain import PromptTemplate, LLMChain
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
 from textblob import TextBlob
 import streamlit as st
-def clean_user_question(question: str) -> str:
-    question = question.strip()
-    question = str(TextBlob(question).correct())
-    if not question.endswith((".", "?", "!")):
-        question += "?"
-    return question
 
-# Function to extract pandas commands
-def extract_pandas_commands(code_string):
-    code_string = code_string.strip()
-    code_string = re.sub(r"```(?:python)?", "", code_string)
-    code_string = code_string.replace("```", "")
-    print(code_string)
-    commands = [line.strip() for line in code_string.split('\n') if line.strip()]
-    return commands
 
-def process_query(user_question, data, llm_query):
-    import pandas as pd
-    cleaned_commands = []
-    command_output = ''
-    execution_output = ''
-    try:
-        pandas_command = llm_query.run(question=user_question)
-        cleaned_code = pandas_command.replace('python\n', '').strip()
-        command_list = extract_pandas_commands(cleaned_code)
-        results = []
-        exec_locals = {'df': data.copy(), 'pd': pd}
-        for command in command_list:
-            cleaned_commands.append(command)
-            try:
-                if command.strip().startswith("print(") and command.strip().endswith(")"):
-                    command = command.strip()[6:-1]
-                try:
-                    result = eval(command, {}, exec_locals)
-                except SyntaxError:
-                    exec(command, {}, exec_locals)
-                    result = exec_locals.get('result', 'Executed')
-                results.append(f"{command}:\n{result}\n")
-            except Exception as cmd_error:
-                results.append(f"{command}:\nError: {str(cmd_error)}\n")
-        command_output = "Formatted Pandas Commands:\n" + "\n".join(cleaned_commands)
-        execution_output = "Execution Results:\n" + "\n".join(results)
-    except Exception as e:
-        command_output = "\n".join(cleaned_commands) if cleaned_commands else cleaned_code
-        execution_output = f"Unexpected error: {str(e)}"
-    return command_output, execution_output
-
+def clean_command(pandas_command):
+   return pandas_command.replace('```python\n', '').replace('\n```', '').strip()
 # Function to generate query
-def generate_query(data_columns, user_question, df, llm):
-    query_prompt = f"""
-      You are an expert AI assistant for translating natural language questions into valid pandas commands.
-      Your task is to understand the user's intent and generate meaningful pandas code using the available DataFrame columns.
+def generate_query(data_summary, user_question,llm,df):
+    template="""
+        You are an AI specialized in generating pandas commands from natural language questions.
+        Given a user question, provide a valid pandas command.
+        
+        - UNDERSTAND THE data_summary WELL
+        - The available sammary in the data frame "df" are: {data_summary}
+        - Return ONLY THE COMMAND.
+        - The data frame name is "df".
+        - IF the User asks you in Arabic, reply with the command.
+        - DO NOT REPLY TO ANY QUESTION THAT DOESN'T RELATE TO THE DATA OR PANDAS COMMANDS.
+        - THE USER COULD ASK YOU TO RETURN MORE THAN ONE COMAND RETURN .
+        - if No single pandas command can directly calculate the answer to the question, you must return multiple commands.
+        - if A more complex solution is needed, you must involve multiple steps.
+        - using any functions like groupby, mean, sum, count, etc. is allowed. you must return commandas that be suitable for the question.
+        - IMPORTANT if the question is related to visualization, you must return the pandas command that return the data that can be used to draw the graph.
+        - YOU MUST NOT return any code related to visualization, just return the pandas command.
 
-      **Data Context:**
-      - The available columns in the DataFrame `df` are: {data_columns}
-      - Carefully match keywords in the question to relevant column names.
-      - If the column name is not explicitly mentioned but implied (e.g., "year" might relate to a date column like "invoice_date" or "Date"), make a best guess.
-      - Handle temporal comparisons when users ask about trends, changes, or predictions across time (e.g., "percentage change from 2019 to 2020").
-      - If missing or inconsistent data is detected, handle it gracefully to ensure valid calculations.
+        return code in this format :
+        ```python
+        #your code here
+        ```
+        example:
+        what is the mean of age ?
+        ```python
+        df['age'].mean()
+        ```
 
-      **Instructions:**
-      - Respond ONLY with valid Python pandas code using DataFrame `df`.
-      - Ensure missing values are handled using `.fillna(0)` or `dropna()` where appropriate.
-      - Use `groupby`, `mean()`, `sum()`, `pct_change()`, or `agg()` if the question implies summary/statistics by category or time.
-      - Use `.dropna()` before applying `.pct_change()` to prevent invalid results.
-      - If percentage change calculations lead to missing values, default to a simple moving average or linear trend for estimation.
+        Question: {question}
+        Pandas Command:
 
-      **Advanced Thinking:**
-      - Support logical inference such as calculating the proportion or trend from one time period to another.
-      - When the user asks for 'predict', 'project', expectation, or 'forecast', apply extrapolation techniques based on valid statistical trends (e.g., moving averages).
-      - If historical trends cannot be established, notify the user with: `"Not enough data to make a reliable prediction."`
-      - Do not attempt machine learning prediction unless explicitly requested.
+        """
+   
+    prompt = PromptTemplate(input_variables=["question","data_summary"],template=template)
+    llm_chain = LLMChain(prompt=prompt,llm=llm)
 
+    cleaned_command = ""
+    command_output = ""
+    execution_output = ""
+    result = None  # Initialize result to None
+    try:
+        # Use the existing llm_chain to get the pandas command
+        pandas_command = llm_chain.run({
+            "question": user_question,
+            "data_summary": str(data_summary)
+        })
+        # Clean the command
+        cleaned_command = clean_command(pandas_command)
 
-      **Edge Cases:**
-      - If the question is unclear or unrelated to available columns, respond with:
-        `"Sorry, I cannot process this request. Please ask a question related to data analysis."`
+        command_output = f"Formatted Pandas Command:\n{cleaned_command}"
 
-      **User Question:** {{question}}
+        # Execute the command
+        exec_locals = {'df': df}
+        exec(f"result = {cleaned_command}", globals(), exec_locals)
+        result = exec_locals.get('result', 'No result found')
 
-      **Pandas Command:**
-    """
-    prompt = PromptTemplate(
-        input_variables=["question"],
-        template=query_prompt,
-    )
-    llm_chain = LLMChain(
-        prompt=prompt,
-        llm=llm,
-    )
-    corrected_question = clean_user_question(user_question)
-    command_output, execution_output = process_query(corrected_question, df, llm_chain)
+        execution_output = f"Execution Result:\n{result}"
+       
+    except Exception as e:
+        command_output = cleaned_command
+        execution_output = f"Error in executing command: {str(e)}"
+
+    # Return command_output and execution_output
     return command_output, execution_output
+  
 
 # Decision making function - Classifies user input as question (1) or preprocessing instruction (2)
 def decision_making(user_input, llm):
@@ -105,12 +83,13 @@ def decision_making(user_input, llm):
 
         Your task is to classify the following user input into one of these two categories:
 
-        - Return **1** if the input is a **question about the data** or a **data query**.
+        - Return **1** if the input is a **question about the data** or a **data query** or **any input related to visulization**.
         📌 Example:
             - "What is the average sales per month?"
             - "Show me the number of missing values in the dataset."
             - "How many records do we have for 2023?"
             - "What is the total sales for each city?"
+            - "draw pie chart for the 'Category' column."
 
         - Return **2** if the input is an **instruction to preprocess the data**.
         📌 Example:
@@ -144,17 +123,8 @@ def decision_making(user_input, llm):
 
 
 def execute_preprocessing_code(df,df2, code_string):
-    """
-    Cleans and executes the given preprocessing code string on the provided DataFrame.
-
-    Parameters:
-        df (pd.DataFrame): The DataFrame to preprocess.
-        code_string (str): The Python code to execute.
-
-    Returns:
-        pd.DataFrame: The modified DataFrame.
-    """
-    import re
+ 
+  
 
     # Remove code fences and extra whitespace
     code_cleaned = re.sub(r"^```python|```$", "", code_string.strip(), flags=re.MULTILINE).strip()
@@ -169,7 +139,7 @@ def execute_preprocessing_code(df,df2, code_string):
     except Exception as e:
         st.session_state.chat_history.append({"role": "assistant", "content": str(e)})
         
-        print(f"Error executing code:\n{e}")
+        # print(f"Error executing code:\n{e}")
         return df  # Return original df if error occurs
 
     # Return the possibly modified DataFrame

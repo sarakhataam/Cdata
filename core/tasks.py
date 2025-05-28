@@ -69,7 +69,8 @@ def create_visualization_task(agent, df_summary, dependency_task):
         - if using qcut function you must use astype(str) after that or any another type
         - handel null value and datatype during plot
         - Replace zero values in a column with a small number (e.g., 0.01) to prevent division by zero errors during ratio calculations.
-        - If the data contains any column related to date or time (such as columns with names including 'date', 'time', 'day', 'month', or 'year'), you MUST sort the dataframe in ascending order by that column before creating any visualization, but only if the column's data type is numerical or datetime (not object or string).
+        - If the data contains any column related to date or time (such as columns with names including 'date', 'time', 'day', 'month', or 'year'), you MUST sort the dataframe in ascending order by that column before creating any visualization, but only if the column's data type is numerical or datetime (not object or string)
+        -If there’s a column that represents date-related strings like months of the year or days of the week, make sure to sort them in their natural chronological order (e.g., January to December ) before plotting. This helps the visualization make more sense and improves readability.
         - YOU MUST use df = df.copy() inside the functions to avoid modifying the original dataframe.
         DIVERSE VISUALIZATION REQUIREMENTS:
         Use ALL of these visualization types where appropriate:

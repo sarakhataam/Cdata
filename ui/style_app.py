@@ -97,7 +97,7 @@ def render_app_header():
             </div>
         """, unsafe_allow_html=True)
         if st.button("Open Dashboard", key="dash_btn", use_container_width=True):
-            st.switch_page(r"D:\data\data\pages\dashboard.py")
+            st.switch_page(r"D:\data\data\cdata\pages\dashboard.py")
 
     with col2:
         st.markdown("""
@@ -108,7 +108,7 @@ def render_app_header():
             </div>
         """, unsafe_allow_html=True)
         if st.button("Open ChatBot", key="chat_btn", use_container_width=True):
-            st.switch_page(r"D:\data\data\pages\chatbot.py")
+            st.switch_page(r"D:\data\data\cdata\pages\chatbot.py")
 
     with col3:
         st.markdown("""
@@ -119,7 +119,7 @@ def render_app_header():
             </div>
         """, unsafe_allow_html=True)
         if st.button("Open EDA", key="eda_btn", use_container_width=True):
-            st.switch_page(r"D:\data\data\pages\eda.py")
+            st.switch_page(r"D:\data\data\cdata\pages\eda.py")
 
     # Divider before new row
     st.markdown("---")
@@ -136,4 +136,4 @@ def render_app_header():
             </div>
         """, unsafe_allow_html=True)
         if st.button("Open Assistant", key="predict_btn", use_container_width=True):
-            st.switch_page(r"D:\data\data\pages\predictive.py")
+            st.switch_page(r"D:\data\data\cdata\pages\predictive.py")

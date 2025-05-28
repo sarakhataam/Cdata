@@ -1,6 +1,7 @@
 import re
 from langchain import PromptTemplate, LLMChain
 import streamlit as st
+import io
 def generate_preprocessing_code(user_order, llm):
  
     template = """
@@ -220,17 +221,18 @@ def generate_graph(query_execution, user_question, llm):
         1. **Convert this data into a properly formatted table with (COLUMN NAMES).** The table should be in Markdown format, suitable for direct inclusion in documentation.
         2. **Determine the most appropriate chart type to visualize this data:**
         3. **Write Python code using `plotly.express` and `pandas` to generate the chart.** 
+         - **don't use pd.stringIO use io.StringIO instead**         
          - **IMPORTANT: DO NOT use `.show()` or `fig.show()` in the code. Only generate the figure object.** The code should be accurate and ready to execute colourful with legend.
         4. **Generate insights from the data**
         
         **Important Guidelines:**
         - **IMPORTANT** you must reply from the prvioded data only.
-        - Do Not creat new sample data .
+        - Do Not create new sample data .
         - **Return only the data table in Markdown format.** Label it as ## Data:.
         - **Return only the Python code for generating the chart.** Label it as ## Code:.
         - **Draw more than one chart if needed**.
         - **Do not include the chart type** in your response.
-        - Important: If the data contains only one value, **You MUST not return any code for chart.**
+        - VERY Important: If the data contains only one value, **You MUST not return any code for chart just return the value without return any visulization**
         - **Generate insights from the data:**
           - **Data Overview:** Summarize the dataset in one row, including details such as the number of rows and columns, column names, and data types.
           - **Trends and Patterns:** Describe significant trends or patterns in the data.
@@ -255,8 +257,9 @@ def generate_graph(query_execution, user_question, llm):
         "user_question": user_question,
         "query_execution": query_execution
     })
-    print("-----------------------------")
-    print("final_output is important",final_output)
+    # print("-----------------------------")
+    # print("final_output is important",final_output)
+    print("final_output", final_output)
     return final_output
 
 def extract_data_code_and_insights(final_output):
@@ -269,4 +272,7 @@ def extract_data_code_and_insights(final_output):
     code_string = code_match.group(1).strip() if code_match else ''
     insights_match = re.search(insights_pattern, final_output, re.DOTALL)
     insights_string = insights_match.group(1).strip() if insights_match else 'No insights found.'
+    print("data_string", data_string)
+    print("code_string", code_string)
+    print("insights_string", insights_string)           
     return data_string, code_string, insights_string

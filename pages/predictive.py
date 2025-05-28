@@ -88,9 +88,6 @@ else:
 
                     # Display the cleaned DataFrame
                     st.dataframe(df_result)
-
-
-
                     st.text("Model trained successfully. You can now test it with new data.")
 
                     st.session_state.model = model
@@ -108,28 +105,26 @@ else:
                                     value=st.session_state.test_sample.get(col, ""),
                                     key=f"input_{col}"
                                 )
-                                num_val = pd.to_numeric(val, errors='coerce')
-                                if pd.isna(num_val):
-                                    print(f"Invalid or missing value for '{col}'. Please enter a valid number.")
-                                    # st.warning(f"Invalid or missing value for '{col}'. Please enter a valid number.")
-                                st.session_state.test_sample[col] = num_val
+                                if val == "":
+                                    # st.warning(f"Please enter a value for '{col}'.")
+                                    st.session_state.test_sample[col] = None
+                                else:
+                                    num_val = pd.to_numeric(val, errors='coerce')
+                                    if pd.isna(num_val):
+                                        # st.warning(f"Invalid value for '{col}'. Please enter a valid number.")
+                                        st.session_state.test_sample[col] = None
+                                    else:
+                                        st.session_state.test_sample[col] = num_val
 
                 if st.button("Test Model"):
-                    if not st.session_state.test_sample:
-                        st.error("Please provide values for the test sample.")
+                    if not st.session_state.test_sample or any(v is None for v in st.session_state.test_sample.values()):
+                        st.error("Please provide valid values for all test sample fields.")
                     else:
-                        test_sample = st.session_state.test_sample
-                        if any(pd.isna(list(test_sample.values()))):
-                            st.error("Test sample contains invalid or missing values. Please correct them.")
-                        else:
-                            prediction = st.session_state.model.predict([list(test_sample.values())])
-                            st.subheader("Test Results")
-                            st.write("Prediction:", prediction)
-                            st.success("Model tested successfully with the provided values.")
+                        prediction = st.session_state.model.predict([list(st.session_state.test_sample.values())])
+                        st.subheader("Test Results")
+                        st.write("Prediction:", prediction)
+                        st.success("Model tested successfully with the provided values.")
 
-                    # # Placeholder for test result
-                    # st.subheader("Test Results")
-                    # st.text("Model prediction will appear here based on your input.")
                 model_bytes = pickle.dumps(st.session_state.model)
                 # Download button
                 st.download_button(
